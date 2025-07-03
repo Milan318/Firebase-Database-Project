@@ -10,6 +10,7 @@ const App = () => {
   return (
     <div>
       <button className='btn btn-dark mt-5 ms-5' onClick={()=> dispatch(createTodo({text:'Todo Added'}))} >Add Todo</button>
+      <button className='btn btn-dark mt-5 ms-3' onClick={()=> dispatch(createTodo({text:'Todo Added'}))} >Delete Todo</button>
     </div>
   )
 }
