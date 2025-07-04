@@ -1,46 +1,60 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createTodo, getTodos } from "./thunk";
+import { createTodo, deleteTodo, getTodo } from "./thunk";
 
 const initialState = {
-    todos:[],
-    loading:false,
-    error:false,
-    errorMsg:null,
+    todo : [],
+    loading : false,
+    error : null,
 }
 
 const todoSlice = createSlice({
-    name: 'todo',
+    name : "todo",
     initialState,
-    reducers: {},
-    extraReducers: (builder) =>{
-        // create todo
+    reducers : {},
+    extraReducers: (builder)=>{
+
+        // create
         builder.addCase(createTodo.pending,(state)=>{
             state.loading = true;
+            state.error = null
         })
         builder.addCase(createTodo.fulfilled,(state,action)=>{
             state.loading = false;
-            state.todos.push(action.payload);
+            state.todo.push(action.payload)
         })
-        builder.addCase(createTodo.rejected,(state,action)=>{
+        builder.addCase(createTodo.rejected,(state)=>{
             state.loading = false;
-            state.error = true;
-            state.errorMsg = action.error;
+            state.error = action.error.message
         })
-        // get Todos data
-        builder.addCase(getTodos.pending,(state)=>{
+
+        // get data
+        builder.addCase(getTodo.pending,(state)=>{
             state.loading = true;
+            state.error = null
         })
-        builder.addCase(getTodos.fulfilled,(state,action)=>{
+        builder.addCase(getTodo.fulfilled,(state,action)=>{
             state.loading = false;
-            console.log(action.payload);
-            
+            state.todo = action.payload
         })
-        builder.addCase(getTodos.rejected,(state,action)=>{
+        builder.addCase(getTodo.rejected,(state,action)=>{
             state.loading = false;
-            state.error = true;
-            state.errorMsg = action.error;
+            state.error = action.error.message
         })
-    }
+
+        // delete
+        builder.addCase(deleteTodo.pending,(state)=>{
+            state.loading = true;
+            state.error = null
+        })
+        builder.addCase(deleteTodo.fulfilled,(state,action)=>{
+            state.loading = false;
+            state.todo = state.todo.filter((item)=>item.id !== action.payload)
+        })
+        builder.addCase(deleteTodo.rejected,(state,action)=>{
+            state.loading = false;
+            state.error = action.error.message
+        })
+    },
 })
 
 export default todoSlice.reducer;
