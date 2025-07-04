@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createTodo, deleteTodo, getTodo } from "./thunk";
+import { createTodo, deleteTodo, getTodo, updateTodo } from "./thunk";
 
 const initialState = {
     todo : [],
@@ -51,6 +51,25 @@ const todoSlice = createSlice({
             state.todo = state.todo.filter((item)=>item.id !== action.payload)
         })
         builder.addCase(deleteTodo.rejected,(state,action)=>{
+            state.loading = false;
+            state.error = action.error.message
+        })
+
+        // update
+        builder.addCase(updateTodo.pending,(state)=>{
+            state.loading = true;
+            state.error = null
+        })
+        builder.addCase(updateTodo.fulfilled,(state,action)=>{
+            state.loading = false;
+            state.todo = state.todo.map((item)=>{
+                if(item.id === action.payload.id){
+                    return action.payload
+                }
+                return item;
+            })
+        })
+        builder.addCase(updateTodo.rejected,(state,action)=>{
             state.loading = false;
             state.error = action.error.message
         })
